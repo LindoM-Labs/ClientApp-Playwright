@@ -47,7 +47,7 @@ test('Invalid Password Test', async({page}) =>
     // console.log(invalidCredentialError);
 });
 
-test('Valid Credentials Test', async({page}) =>
+test('End to End Test', async({page}) =>
 {
     await page.goto('https://rahulshettyacademy.com/client/#/auth/login');
    
@@ -64,7 +64,7 @@ test('Valid Credentials Test', async({page}) =>
      expect(text?.trim()).toBe('Login Successfully');
      console.log(text);
 
-      await page.getByRole('heading', {name: 'Automation'}).waitFor();
+    await page.getByRole('heading', {name: 'Automation'}).waitFor();
     const myProduct = await page.locator('h5').nth(2).textContent(); // Getting the name of the product i will be placing in the cart and use it for validations
     await page.locator("[class*='w-10']").nth(2).click(); // Clicking on the add to cart button of the product i will be placing in the cart
     await page.locator("[class*='ng-trigger']").waitFor();
