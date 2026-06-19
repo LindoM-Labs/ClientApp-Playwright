@@ -63,8 +63,9 @@ test('Valid Credentials Test', async({page}) =>
      const text = await page.locator('.toast-success').textContent();
      expect(text?.trim()).toBe('Login Successfully');
      console.log(text);
-
-    //await expect(page.locator('.toast-tittle')).toHaveText(' Login Successful ', { exact: true });
-
+     //await page.waitForLoadState('networkidle'); // waiting to the page to load completely (API calls) before asserting the heading
+     await page.getByRole('heading', {name: 'Automation'}).waitFor();//Alternatively, we can also wait for the heading to be visible before asserting it. This ensures that the page has loaded and the heading is present before we check its visibility.
+     await expect(page.getByRole('heading', {name: 'Automation'})).toBeVisible();
+     
 
 });
