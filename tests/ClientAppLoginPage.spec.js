@@ -51,13 +51,15 @@ test('End to End Test', async({page}) =>
     
     await page.goto('https://rahulshettyacademy.com/client/#/auth/login');
    //Login with valid credentials
-    const emailField = await page.getByPlaceholder('email@example.com');
-    const passwordField = await page.locator('#userPassword');
-    const loginBtn = await page.locator('#login');
+    const emailField =  page.getByPlaceholder('email@example.com');
+    const passwordField =  page.locator('#userPassword');
+    const loginBtn =  page.locator('#login');
     const productName = 'iphone 13 pro';
+    const myEmail = 'makanda.odwa@gmail.com';
+    const password = 'Issie24!';
 
-    await emailField.fill('makanda.odwa@gmail.com');
-    await passwordField.fill('Issie24!');
+    await emailField.fill(myEmail);
+    await passwordField.fill(password);
     await loginBtn.click();
     
     //Login successful assertion
@@ -66,12 +68,11 @@ test('End to End Test', async({page}) =>
      console.log(text);
 
      //Product Page Loading
-     page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle');
      await page.getByText(productName).waitFor({state: 'visible'});
-     const products = await page.locator('.card-body');
+     const products =  page.locator('.card-body'); 
      const titles = await page.locator('.card-body b').allTextContents();
      console.log(titles);
-    
 
     //Adding a product to the cart
     //Option 1: Selecting the product from the page
@@ -95,7 +96,7 @@ test('End to End Test', async({page}) =>
     const productToCartConfirmationText = await page.locator("[class*='toast-success']").textContent();
     
     //Added to cart assertion
-    expect(productToCartConfirmationText?.trim()).toBe("Product Added To Cart");
+    await expect(productToCartConfirmationText?.trim()).toBe("Product Added To Cart");
     console.log(productToCartConfirmationText);
     
     //Going to the cart page
@@ -127,6 +128,13 @@ test('End to End Test', async({page}) =>
     await creditCardField.fill('');
     await creditCardField.fill(creditCardNo);
 
+    //Date section
+    const months = await page.locator('.ddl').nth(0);
+    const dates = await page.locator('.ddl').nth(1);
+
+    await dates.selectOption('15');
+    await months.selectOption('07');
+
     await page.locator('.row input').nth(1).fill('2548'); //CVV Field
     await page.locator('.row input').nth(2).fill('Lindokuhle M'); //Name on the Card DateField
     await page.locator('.row input').nth(3).fill(coupon); //Coupon Field
@@ -134,10 +142,62 @@ test('End to End Test', async({page}) =>
     await page.locator("[class*='mt-1 ng-star-inserted']").waitFor();
     const couponConfirmationText = await page.locator("[class*='mt-1 ng-star-inserted']").textContent();
     expect(couponConfirmationText?.trim()).toBe('* Coupon Applied');
-    await page.locator('.row input').nth(5).fill('South'); //Country Field
-    await page.getByText(' South Africa').waitFor(); //Selecting the country from the dropdown
-    await page.getByText(' South Africa').click();
 
+    //Validating if the email address is the same as the login email
+    const emailLabel = await page.locator(`label:has-text("${myEmail}")`).textContent();
+    expect(emailLabel?.trim()).toBe(myEmail);
 
-  
+    await page.getByPlaceholder('Select Country').pressSequentially("south",{delay:100});
+    const dropdown = await page.locator(".ta-results");
+    await dropdown.waitFor();
+    await page.getByRole('button', { name: /south africa/i }).click();
+    // const options = dropdown.locator("button");
+    // await dropdown.waitFor();
+    // const optionsCount = await options.count();
+
+    // for(let i = 0; i < optionsCount; i++){
+    //     const option = options.nth(i);
+    //     const text = (await option.textContent()).trim();
+    //    // const countryOption = (await dropdown.locator("button").nth(i).textContent())?.trim();
+    //     console.log(text);
+    //     if(text?.toLowerCase() === "south africa"){
+    //         await dropdown.locator("button").nth(i).click();
+    //         break;
+    //     }
+    // }
+   
+    await page.locator('.action__submit').click();
+
+    //Order Confirmation Page
+    await expect(page.locator('.hero-primary')).toBeVisible();
+    const orderIDtext = await page.locator('.em-spacer-1 .ng-star-inserted').textContent();
+
+    const myOrderID = orderIDtext
+                    ?.split('|')[1]
+                    ?.trim();
+
+    console.log(myOrderID);
+    await page.locator("li [routerlink*='myorders']").click();
+
+    //View Orders Page
+    const rows =  page.locator('tbody tr');
+    await expect(rows.first()).toBeVisible();
+    const rowCount = await rows.count();
+    console.log(rowCount);
+
+    for(let i = 0; i < rowCount; i++){
+        const row = rows.nth(i);
+        const rowOrderId = (await row.locator("th").textContent())?.trim();
+        console.log(rowOrderId);
+
+        if(rowOrderId === myOrderID){
+            await row.locator("td .btn-primary").click();
+            break;
+        }
+    }
+
+    await expect(page.locator('.email-preheader p')).toBeVisible();
+    const ordeSummeryId = (await page.locator('.col-text').textContent())?.trim();
+    expect(ordeSummeryId).toBe(myOrderID);
+    
 });
