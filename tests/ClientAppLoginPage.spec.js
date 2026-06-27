@@ -52,8 +52,8 @@ test('End to End Test', async({page}) =>
     await page.goto('https://rahulshettyacademy.com/client/#/auth/login');
    //Login with valid credentials
     const emailField =  page.getByPlaceholder('email@example.com');
-    const passwordField =  page.locator('#userPassword');
-    const loginBtn =  page.locator('#login');
+    const passwordField =  page.getByPlaceholder('enter your passsword');
+    const loginBtn =  page.getByRole('button', { name: "Login"});
     const productName = 'iphone 13 pro';
     const myEmail = 'makanda.odwa@gmail.com';
     const password = 'Issie24!';
@@ -68,28 +68,13 @@ test('End to End Test', async({page}) =>
      console.log(text);
 
      //Product Page Loading
-    await page.waitForLoadState('networkidle');
+     await page.waitForLoadState('networkidle');
      await page.getByText(productName).waitFor({state: 'visible'});
      const products =  page.locator('.card-body'); 
-     const titles = await page.locator('.card-body b').allTextContents();
-     console.log(titles);
+     
+     await products.filter({hasText: productName})
+                   .getByRole('button', { name: " Add To Cart"}).click();
 
-    //Adding a product to the cart
-    //Option 1: Selecting the product from the page
-    // const myProduct = await page.locator('h5').nth(2).textContent(); // Getting the name of the product i will be placing in the cart and use it for validations
-    // console.log(myProduct);
-    // await page.locator("[class*='w-10']").nth(2).click(); // Clicking on the add to cart button of the product i will be placing in the cart
-
-    //Option 2: Using for loop to get the product
-    const count = await products.count();
-    for(let i = 0; i < count; i++){
-        const name = (await products.nth(i).locator('b').textContent())?.trim();
-        console.log(name);
-        if(name === productName){
-           await page.locator("[class*='w-10']").nth(i).click();
-           break;
-        }
-    }
 
     //Cart confirmation
     await page.locator("[class*='ng-trigger']").waitFor();
@@ -97,33 +82,23 @@ test('End to End Test', async({page}) =>
     
     //Added to cart assertion
     await expect(productToCartConfirmationText?.trim()).toBe("Product Added To Cart");
-    console.log(productToCartConfirmationText);
     
     //Going to the cart page
-    // Option 1: const cartBtn = await page.locator("[class*='btn-custom']").nth(2);
-    //Option 2:
-    await page.locator("[routerlink*='cart']").click();
-    await page.locator('div li').first().waitFor({state: 'visible'});// This gives assurance that the page is loaded with the products
-
+    await page.locator('li').getByRole('button', { name: "Cart"}).click();
+    await expect(page.locator('div li').first()).toBeVisible();
+    
+    
     //Finding the product in the cart amongst other products
-    //Option 1: Getting a collection of all the headings, then using .toContainText(productName) with expect, to confirm if it does exist
-    // const cartItems = await page.locator('.cart h3');
-    // await expect(cartItems).toContainText(productName);// .toContainText() is used to go through the text elements especially if they are a collection of elements and check if the text is present in any of them. .toHaveText() is used to check if the text is present in a single element
-   
-    //Option 2: Using Playwright CSS selector with a text psueso-class
-    const bool = await page.getByRole('heading', { name: /iphone/i }); //Returns Boolean value
-    expect(bool).toBeTruthy();
-
+    await expect(page.getByText(productName)).toBeVisible();
+    
     //Proceeding to checkout
     await page.getByRole('button', {name: 'Checkout'}).click();
-    const paymentPageText = await page.locator('.payment__title').nth(0).textContent();
    
     //Filling in the payment details
-    expect(paymentPageText?.trim()).toBe('Payment Method');
-    console.log(paymentPageText);
+    await expect(page.getByRole('button', { name: 'Apply Coupon' })).toBeVisible();
     const coupon = 'rahulshettyacademy';
     const creditCardNo = '1234567891012'
-    const creditCardField = await page.locator('.row input').nth(0);
+    const creditCardField = page.locator('.row input').nth(0);
 
     await creditCardField.fill('');
     await creditCardField.fill(creditCardNo);
@@ -147,56 +122,32 @@ test('End to End Test', async({page}) =>
     const emailLabel = await page.locator(`label:has-text("${myEmail}")`).textContent();
     expect(emailLabel?.trim()).toBe(myEmail);
 
+    //Select Country
     await page.getByPlaceholder('Select Country').pressSequentially("south",{delay:100});
     const dropdown = await page.locator(".ta-results");
     await dropdown.waitFor();
     await page.getByRole('button', { name: /south africa/i }).click();
-    // const options = dropdown.locator("button");
-    // await dropdown.waitFor();
-    // const optionsCount = await options.count();
-
-    // for(let i = 0; i < optionsCount; i++){
-    //     const option = options.nth(i);
-    //     const text = (await option.textContent()).trim();
-    //    // const countryOption = (await dropdown.locator("button").nth(i).textContent())?.trim();
-    //     console.log(text);
-    //     if(text?.toLowerCase() === "south africa"){
-    //         await dropdown.locator("button").nth(i).click();
-    //         break;
-    //     }
-    // }
-   
     await page.locator('.action__submit').click();
 
     //Order Confirmation Page
-    await expect(page.locator('.hero-primary')).toBeVisible();
+    await expect(page.getByText('Thankyou for the order.')).toBeVisible();
     const orderIDtext = await page.locator('.em-spacer-1 .ng-star-inserted').textContent();
 
     const myOrderID = orderIDtext
                     ?.split('|')[1]
                     ?.trim();
 
-    console.log(myOrderID);
-    await page.locator("li [routerlink*='myorders']").click();
+    await page.getByRole('button', { name: 'ORDERS' }).click();
 
     //View Orders Page
     const rows =  page.locator('tbody tr');
     await expect(rows.first()).toBeVisible();
-    const rowCount = await rows.count();
-    console.log(rowCount);
 
-    for(let i = 0; i < rowCount; i++){
-        const row = rows.nth(i);
-        const rowOrderId = (await row.locator("th").textContent())?.trim();
-        console.log(rowOrderId);
-
-        if(rowOrderId === myOrderID){
-            await row.locator("td .btn-primary").click();
-            break;
-        }
-    }
-
-    await expect(page.locator('.email-preheader p')).toBeVisible();
+    await rows.filter({hasText: myOrderID})
+              .getByRole('button', { name: 'View'})
+              .click();
+   
+    await expect(page.getByText('Thank you for Shopping With Us')).toBeVisible();
     const ordeSummeryId = (await page.locator('.col-text').textContent())?.trim();
     expect(ordeSummeryId).toBe(myOrderID);
     
