@@ -51,7 +51,7 @@ class TestValidations
     }
 
     async rowsVisibilityValidation(rows){
-         await expect(rows.first()).toBeVisible();
+         await expect(await rows.first()).toBeVisible();
     }
 
     async orderSummaryLocator(){

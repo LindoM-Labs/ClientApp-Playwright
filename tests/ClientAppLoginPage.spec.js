@@ -1,12 +1,6 @@
 import {test, expect} from '@playwright/test';
-const {LoginPage} = require('../PageObjects/LoginPage');
-const {TestValidations} = require('./Utils/TestValidations');
-const {ProductDashboard} = require('../PageObjects/ProductDashboard');
-const {CartPage} = require('../PageObjects/CartPage');
-const {OrderDetailsPage} = require('../PageObjects/OrderDetailsPage');
-const {OrderConfirmationPage} = require('../PageObjects/OrderConfirmationPage');
-const {MyOrdersPage} = require('../PageObjects/MyOrdersPage');
-const {OrderSummaryPage} = require('../PageObjects/OrderSummaryPage');
+const {POManager} = require('../PageObjects/POManager');
+
 
 
 test('Empty credentials Test', async({page}) =>
@@ -50,41 +44,44 @@ test('Invalid Password Test', async({page}) =>
     await loginBtn.click();
 
     await expect(page.locator('.toast-message')).toHaveText('Incorrect email or password.');
-    page.pause();
+    await page.pause();
 
 
 });
 
 test('End to End Test', async({page}) =>
-{   
+{  
+    const poManager = new POManager(page)
+
     const productName = 'iphone 13 pro';
     const username = 'makanda.odwa@gmail.com';
     const password = 'Issie24!';
 
-    const loginPage = new LoginPage(page);
+    const loginPage = poManager.getLoginPage();
   
     await loginPage.navigateToLoginPage();
     await loginPage.login(username, password);
 
     
-    const testValidations = new TestValidations(page);
+    const testValidations = poManager.getTestalidations();
+
     const expectedLoginSuccessfulText = 'Login Successfully';
     await testValidations.loginPageValidation(expectedLoginSuccessfulText);
 
    
-    const productDashboardPage = new ProductDashboard(page);
+    const productDashboardPage = poManager.getDashboardPage();
     await testValidations.waitForProductLocator(productName);
     await productDashboardPage.addProductToCart(productName);
     await testValidations.productAddedValidation();
     
     await productDashboardPage.navigateToCart();
 
-    const cartPage = new CartPage(page);
+    const cartPage = poManager.getCartPage();
     await testValidations.waitForCartLocator('div li');
     await cartPage.checkout();
     
    
-    const orderPage = new OrderDetailsPage(page);
+    const orderPage = poManager.getOrderPage();
     await testValidations.waitForCouponBtn('Apply Coupon');
   
     const creditCardNo = '1234567891012';
@@ -98,19 +95,19 @@ test('End to End Test', async({page}) =>
     await orderPage.fillDetails(creditCardNo, date, month, cvv, nameOnTheCard, coupon, countryPrefix)
     await testValidations.emailValidation(username);
 
-    const orderConfirmationPage = new OrderConfirmationPage(page);
+    const orderConfirmationPage = poManager.getOrderConfirmationPage();
     await testValidations.orderConfirmationValidation();
     const orderId = await orderConfirmationPage.getOrderID();
     await orderConfirmationPage.navigateToOrdersPage();
 
    
 
-    const myOrdersPage = new MyOrdersPage(page);
+    const myOrdersPage = poManager.getMyOrdersPage();
+    await myOrdersPage.confirmVisibility();
     await myOrdersPage.viewMyOrder(orderId);
     await testValidations.orderSummaryLocator();
 
-    const summaryPage = new OrderSummaryPage(page);
-
+    const summaryPage = poManager.getSummaryPage();
     await testValidations.validateOrderID(await summaryPage.getOrderSummaryId(), orderId);
     
 });

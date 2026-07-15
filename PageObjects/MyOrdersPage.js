@@ -5,7 +5,7 @@ class MyOrdersPage
     {
         this.page = page;
         this.rows =  page.locator('tbody tr');
-        this.confirmVisibility(this.rows);
+        //this.confirmVisibility(this.rows);
     }
 
     async viewMyOrder(orderId)
@@ -18,7 +18,7 @@ class MyOrdersPage
 
     async confirmVisibility()
     {
-        new TestValidations(this.page).rowsVisibilityValidation(this.rows);
+       await  new TestValidations(this.page).rowsVisibilityValidation(this.rows);
     }
 }
 
