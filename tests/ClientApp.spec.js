@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+const {test: customtest} = require('../Utils/test-base');
 const { POManager } = require("../PageObjects/POManager");
 //Json->string-.js object
 const dataset = JSON.parse(
@@ -108,3 +109,60 @@ for (const data of dataset) { //This loop is going to act as a data provider, an
     );
   });
 }
+
+customtest(`End to End Test using custom data feature`, async ({ page, testDataForOrder }) => {
+    const poManager = new POManager(page);
+    const data = testDataForOrder;
+
+    const loginPage = poManager.getLoginPage();
+
+    await loginPage.navigateToLoginPage();
+    await loginPage.login(data.username, data.password);
+
+    const testValidations = poManager.getTestalidations();
+
+    const expectedLoginSuccessfulText = "Login Successfully";
+    await testValidations.loginPageValidation(expectedLoginSuccessfulText);
+
+    const productDashboardPage = poManager.getDashboardPage();
+    await testValidations.waitForProductLocator(data.productName);
+    await productDashboardPage.addProductToCart(data.productName);
+    await testValidations.productAddedValidation();
+
+    await productDashboardPage.navigateToCart();
+
+    const cartPage = poManager.getCartPage();
+    await testValidations.waitForCartLocator("div li");
+    await cartPage.checkout();
+
+    const orderPage = poManager.getOrderPage();
+    await testValidations.waitForCouponBtn("Apply Coupon");
+
+    await orderPage.fillDetails(
+      data.creditCardNo,
+      data.date,
+      data.month,
+      data.cvv,
+      data.nameOnTheCard,
+      data.coupon,
+      data.countryPrefix,
+      data.country,
+    );
+    await testValidations.emailValidation(data.username);
+
+    const orderConfirmationPage = poManager.getOrderConfirmationPage();
+    await testValidations.orderConfirmationValidation();
+    const orderId = await orderConfirmationPage.getOrderID();
+    await orderConfirmationPage.navigateToOrdersPage();
+
+    const myOrdersPage = poManager.getMyOrdersPage();
+    await myOrdersPage.confirmVisibility();
+    await myOrdersPage.viewMyOrder(orderId);
+    await testValidations.orderSummaryLocator();
+
+    const summaryPage = poManager.getSummaryPage();
+    await testValidations.validateOrderID(
+      await summaryPage.getOrderSummaryId(),
+      orderId,
+    );
+  });
