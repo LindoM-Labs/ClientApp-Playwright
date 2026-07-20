@@ -18,7 +18,7 @@ class OrderDetailsPage
 
    
 
-    async fillDetails(creditCardNo, date, month, cvv, nameOnTheCard, coupon, countryPrefix)
+    async fillDetails(creditCardNo, date, month, cvv, nameOnTheCard, coupon, countryPrefix, country)
     {
         await this.creditCardField.fill('');
         await this.creditCardField.fill(creditCardNo);
@@ -28,10 +28,10 @@ class OrderDetailsPage
         await this.nameOnTheCardField.fill(nameOnTheCard);
         await this.countryField.pressSequentially(countryPrefix,{delay:100});
         await this.dropdown.waitFor();
-        await this.page.getByRole('button', { name: /south africa/i }).click();
+        await this.page.getByRole('button', { name: new RegExp(`${country}$`,'i')}).click();
         await this.couponFieldHandling(coupon);
         await this.placeOrderBtn.click();
-
+      
     }
      async couponFieldHandling(coupon)
     {

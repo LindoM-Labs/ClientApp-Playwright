@@ -1,12 +1,41 @@
-{
-    "username" : "makanda.odwa@gmail.com",
-    "password" : "Issie24!",
-    "productName" : "iphone 13 pro",
-    "creditCardNo" : "1234567891012",
-    "date" : "15",
-    "month" : "02",
-    "cvv" : "2541",
-    "nameOnTheCard" : "Lindokuhle M",
-    "coupon" : "rahulshettyacademy",
-    "countryPrefix" : "south"
-}
+[
+    {
+        "username" : "makanda.odwa@gmail.com",
+        "password" : "Issie24!",
+        "productName" : "iphone 13 pro",
+        "creditCardNo" : "1234567891012",
+        "date" : "15",
+        "month" : "02",
+        "cvv" : "2541",
+        "nameOnTheCard" : "Lindokuhle M",
+        "coupon" : "rahulshettyacademy",
+        "countryPrefix" : "south",
+        "country" : "south africa"
+    },
+    {
+        "username" : "Issie@gmail.com",
+        "password" : "Luphawu24!",
+        "productName" : "ADIDAS ORIGINAL",
+        "creditCardNo" : "1234567887412",
+        "date" : "13",
+        "month" : "11",
+        "cvv" : "147852",
+        "nameOnTheCard" : "Isiphile M",
+        "coupon" : "rahulshettyacademy",
+        "countryPrefix" : "ind",
+        "country" : "India"
+    },
+    {
+        "username" : "sinazo@yahoo.com",
+        "password" : "Nhanha18!",
+        "productName" : "ZARA COAT 3",
+        "creditCardNo" : "1234567887412",
+        "date" : "03",
+        "month" : "09",
+        "cvv" : "123",
+        "nameOnTheCard" : "Sinazo M",
+        "coupon" : "rahulshettyacademy",
+        "countryPrefix" : "germ",
+        "country" : "germany"
+    }
+]

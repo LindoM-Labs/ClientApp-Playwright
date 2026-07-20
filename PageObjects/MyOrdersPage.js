@@ -5,7 +5,7 @@ class MyOrdersPage
     {
         this.page = page;
         this.rows =  page.locator('tbody tr');
-        //this.confirmVisibility(this.rows);
+        
     }
 
     async viewMyOrder(orderId)
