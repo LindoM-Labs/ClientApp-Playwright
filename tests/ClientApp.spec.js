@@ -1,5 +1,7 @@
 import {test, expect} from '@playwright/test';
 const {POManager} = require('../PageObjects/POManager');
+//Json->string-.js object
+const dataset = JSON.parse(JSON.stringify(require('../Utils/ClientAppTestData.json')));
 
 
 
@@ -53,14 +55,10 @@ test('End to End Test', async({page}) =>
 {  
     const poManager = new POManager(page)
 
-    const productName = 'iphone 13 pro';
-    const username = 'makanda.odwa@gmail.com';
-    const password = 'Issie24!';
-
     const loginPage = poManager.getLoginPage();
   
     await loginPage.navigateToLoginPage();
-    await loginPage.login(username, password);
+    await loginPage.login(dataset.username, dataset.password);
 
     
     const testValidations = poManager.getTestalidations();
@@ -70,8 +68,8 @@ test('End to End Test', async({page}) =>
 
    
     const productDashboardPage = poManager.getDashboardPage();
-    await testValidations.waitForProductLocator(productName);
-    await productDashboardPage.addProductToCart(productName);
+    await testValidations.waitForProductLocator(dataset.productName);
+    await productDashboardPage.addProductToCart(dataset.productName);
     await testValidations.productAddedValidation();
     
     await productDashboardPage.navigateToCart();
@@ -84,16 +82,9 @@ test('End to End Test', async({page}) =>
     const orderPage = poManager.getOrderPage();
     await testValidations.waitForCouponBtn('Apply Coupon');
   
-    const creditCardNo = '1234567891012';
-    const date = '15';
-    const month = '02';
-    const cvv = '2541';
-    const nameOnTheCard = 'Lindokuhle M';
-    const coupon = 'rahulshettyacademy';
-    const countryPrefix = 'south';
 
-    await orderPage.fillDetails(creditCardNo, date, month, cvv, nameOnTheCard, coupon, countryPrefix)
-    await testValidations.emailValidation(username);
+    await orderPage.fillDetails(dataset.creditCardNo, dataset.date, dataset.month, dataset.cvv, dataset.nameOnTheCard, dataset.coupon, dataset.countryPrefix)
+    await testValidations.emailValidation(dataset.username);
 
     const orderConfirmationPage = poManager.getOrderConfirmationPage();
     await testValidations.orderConfirmationValidation();

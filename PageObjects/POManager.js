@@ -1,5 +1,5 @@
 const {LoginPage} = require('../PageObjects/LoginPage');
-const {TestValidations} = require('../tests/Utils/TestValidations');
+const {TestValidations} = require('../Utils/TestValidations');
 const {ProductDashboard} = require('../PageObjects/ProductDashboard');
 const {CartPage} = require('../PageObjects/CartPage');
 const {OrderDetailsPage} = require('../PageObjects/OrderDetailsPage');

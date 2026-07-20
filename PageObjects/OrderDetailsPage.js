@@ -1,4 +1,4 @@
-const {TestValidations} = require('../tests/Utils/TestValidations');
+const {TestValidations} = require('../Utils/TestValidations');
 
 class OrderDetailsPage
 {
