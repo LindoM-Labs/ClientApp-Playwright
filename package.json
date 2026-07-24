@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": 
+  {
+    "regression": "npx playwright test",
+    "loginNegativeScenarios": "npx playwright test --grep @NegScenarios --config playwright.config.ts --project=chromium",
+    "E2EdataProvider": "npx playwright test --grep @DataProvider --config playwright.config.ts --project=chromium",
+    "dataCustomFixture": "npx playwright test --grep @CustomFixture --config playwright.config.ts --project=chromium"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
