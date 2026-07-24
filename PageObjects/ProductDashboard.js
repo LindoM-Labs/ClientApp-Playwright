@@ -1,4 +1,6 @@
-class ProductDashboard
+
+
+export class ProductDashboard
 {
     constructor(page)
     {

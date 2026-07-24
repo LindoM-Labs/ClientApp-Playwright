@@ -1,13 +1,14 @@
-const {expect} = require('@playwright/test');
+import{expect, type Locator, type Page} from '@playwright/test';
 
-class TestValidations 
+export class TestValidations 
 {
-    constructor(page)
+    page: Page;
+    constructor(page: Page)
     {
         this.page = page;
     }
 
-    async loginPageValidation(loginText)
+    async loginPageValidation(loginText: string)
     {
         const text = await this.page.locator('.toast-success').textContent();
         expect(text?.trim()).toBe(loginText);
@@ -20,15 +21,15 @@ class TestValidations
         await expect(productToCartConfirmationText?.trim()).toBe("Product Added To Cart");
     }
 
-    async waitForCartLocator(locator)
+    async waitForCartLocator(locatorString: string)
     {
-        await expect(this.page.locator(locator).first()).toBeVisible();
+        await expect(this.page.locator(locatorString).first()).toBeVisible();
     }
-      async waitForProductLocator(productName)
+      async waitForProductLocator(productName: string)
     {
         await this.page.getByText(productName).waitFor({state: 'visible'});
     }
-    async waitForCouponBtn(btnText){
+    async waitForCouponBtn(btnText: string){
        await expect(this.page.getByRole('button', { name: btnText })).toBeVisible();
     }
     async couponAppliedValidation()
@@ -40,7 +41,7 @@ class TestValidations
 
     }
 
-    async emailValidation(myEmail){
+    async emailValidation(myEmail: string){
             const emailLabel = await this.page.locator(`label:has-text("${myEmail}")`).textContent();
             expect(emailLabel?.trim()).toBe(myEmail);
     }
@@ -50,7 +51,7 @@ class TestValidations
          await expect(this.page.getByText('Thankyou for the order.')).toBeVisible();
     }
 
-    async rowsVisibilityValidation(rows){
+    async rowsVisibilityValidation(rows: Locator){
          await expect(await rows.first()).toBeVisible();
     }
 
@@ -58,7 +59,7 @@ class TestValidations
          await expect(this.page.getByText('Thank you for Shopping With Us')).toBeVisible();
     }
 
-    async validateOrderID(summaryId, orderId){
+    async validateOrderID(summaryId: string, orderId: string ){
         expect(summaryId).toBe(orderId);
     }
     
@@ -66,4 +67,3 @@ class TestValidations
 
 }
 
-module.exports = {TestValidations};

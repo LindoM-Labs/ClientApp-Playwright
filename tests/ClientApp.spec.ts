@@ -1,10 +1,9 @@
 import { test, expect } from "@playwright/test";
-const {test: customtest} = require('../Utils/test-base');
-const { POManager } = require("../PageObjects/POManager");
-//Json->string-.js object
-const dataset = JSON.parse(
-  JSON.stringify(require("../Utils/ClientAppTestData.json")),
-);
+import {test as customtest} from '../Utils/test-base';
+import { POManager } from "../PageObjectsTypscript/POManager";
+import testData from "../Utils/ClientAppTestData.json";
+const dataset = JSON.parse(JSON.stringify(testData));
+
 
 test("Empty credentials Test", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
