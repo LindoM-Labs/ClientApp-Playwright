@@ -17,8 +17,14 @@ export class TestValidations
 
     async productAddedValidation()
     {
-        const productToCartConfirmationText = await this.page.locator("[class*='toast-success']").textContent();
-        await expect(productToCartConfirmationText?.trim()).toBe("Product Added To Cart");
+        // const productToCartConfirmationText = await this.page.getByRole('alert', { name: 'Product Added To Cart'}).textContent();
+        // await expect(
+        //     productToCartConfirmationText?.trim())
+        // .toHaveText("Product Added To Cart");
+
+        await expect(
+                        this.page.getByRole('alert', { name: 'Product Added To Cart'})
+                    ).toHaveText("Product Added To Cart");
     }
 
     async waitForCartLocator(locatorString: string)

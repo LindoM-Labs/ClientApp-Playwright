@@ -22,7 +22,7 @@ export class ProductDashboard
                            .getByRole('button', { name: " Add To Cart"})
                            .click();
 
-        await this.page.locator("[class*='ng-trigger']").waitFor();
+        await this.page.getByRole('alert', { name: 'Product Added To Cart'}).waitFor();
     }
 
     async navigateToCart()
