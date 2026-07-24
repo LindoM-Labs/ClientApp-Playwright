@@ -5,7 +5,7 @@ import testData from "../Utils/ClientAppTestData.json";
 const dataset = JSON.parse(JSON.stringify(testData));
 
 
-test("Empty credentials Test", async ({ page }) => {
+test("@NegScenarios Empty credentials Test", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
   await page.locator("#login").click();
 
@@ -17,7 +17,7 @@ test("Empty credentials Test", async ({ page }) => {
   );
 });
 
-test("Invalid Email Test", async ({ page }) => {
+test("@NegScenarios Invalid Email Test", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
   const loginBtn = page.locator("#login");
   const emailField = page.getByPlaceholder("email@example.com");
@@ -33,7 +33,7 @@ test("Invalid Email Test", async ({ page }) => {
   );
 });
 
-test("Invalid Password Test", async ({ page }) => {
+test("@NegScenarios Invalid Password Test", async ({ page }) => {
   await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
 
   const emailField = page.getByPlaceholder("email@example.com");
@@ -52,7 +52,7 @@ test("Invalid Password Test", async ({ page }) => {
 });
 
 for (const data of dataset) { //This loop is going to act as a data provider, and I am using username/productName as part of the test title so that each test is unique otherwise Playwright will give ann error
-  test(`End to End Test for ${data.productName}`, async ({ page }) => {
+  test(`@DataProvider End to End Test for ${data.productName}`, async ({ page }) => {
     const poManager = new POManager(page);
 
     const loginPage = poManager.getLoginPage();
@@ -109,7 +109,7 @@ for (const data of dataset) { //This loop is going to act as a data provider, an
   });
 }
 
-customtest(`End to End Test using custom data feature`, async ({ page, testDataForOrder }) => {
+customtest(`@CustomFixture End to End Test using custom data feature`, async ({ page, testDataForOrder }) => {
     const poManager = new POManager(page);
     const data = testDataForOrder;
 
