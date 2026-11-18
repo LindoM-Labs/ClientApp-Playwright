@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import {test as customtest} from '../Utils/test-base';
-import { POManager } from "../PageObjectsTypscript/POManager";
+import { POManager } from "../PageObjects/POManager";
 import testData from "../Utils/ClientAppTestData.json";
 const dataset = JSON.parse(JSON.stringify(testData));
 

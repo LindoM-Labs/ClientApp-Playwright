@@ -8,7 +8,10 @@ export default defineConfig({
   expect: {
       timeout: 5000,
     },
-  reporter: 'html',
+  reporter: [
+              ['html'], 
+              ['allure-playwright', {open: 'always'} ]
+            ],
   retries: 3,
 
   projects: [
@@ -19,6 +22,7 @@ export default defineConfig({
               headless: true,
               trace: 'retain-on-failure',
               screenshot: 'only-on-failure',
+              video: 'retain-on-failure'
 
            },
      },

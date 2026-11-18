@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "regression": "npx playwright test",
+    "loginTests": "npx playwright test --grep @Login --config playwright.config.ts --project=chromium",
     "loginNegativeScenarios": "npx playwright test --grep @NegScenarios --config playwright.config.ts --project=chromium",
     "E2EdataProvider": "npx playwright test --grep @DataProvider --config playwright.config.ts --project=chromium",
     "dataCustomFixture": "npx playwright test --grep @CustomFixture --config playwright.config.ts --project=chromium"
